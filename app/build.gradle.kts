@@ -40,8 +40,9 @@ android {
 }
 
 dependencies {
-
+    implementation ("androidx.core:core-splashscreen:1.0.1")
     implementation(libs.androidx.core.ktx)
+    implementation("androidx.compose.material3:material3:1.2.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

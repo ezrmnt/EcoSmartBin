@@ -15,6 +15,8 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") { LoginScreen(navController) }
+        composable ("estadisticas"){ EstadisticasScreen(navController)}
+        composable ("recomendaciones"){ RecomendacionesScreen(navController)  }
         composable("register") { RegistroScreen(navController) }
         composable(
             "welcome/{username}/{userId}",
@@ -32,7 +34,7 @@ fun NavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id") ?: 0
-            PerfilScreenContainer(id)
+            PerfilScreenContainer(id = id, navController = navController)
         }
     }
 }

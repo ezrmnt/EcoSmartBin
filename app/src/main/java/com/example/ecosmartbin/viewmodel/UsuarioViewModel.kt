@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 class UsuarioViewModel : ViewModel() {
     private val _usuario = MutableStateFlow<Usuario?>(null)
     val usuario: StateFlow<Usuario?> = _usuario
+    private val _isUpdating = MutableStateFlow(false)
+    val isUpdating: StateFlow<Boolean> = _isUpdating
 
     private val _userId = MutableStateFlow<Int?>(null)
     val userId: StateFlow<Int?> = _userId
@@ -28,6 +30,8 @@ class UsuarioViewModel : ViewModel() {
             if (response.isSuccessful) {
                 val usuarioResponse = response.body()
                 if (usuarioResponse != null) {
+                    _usuario.value = usuarioResponse
+                    Log.d("UsuarioViewModel", "Usuario cargado: $usuarioResponse")
                     val usuarioSeguro = usuarioResponse.copy(
                         nombre = usuarioResponse.nombre ?: "",
                         apellidoPaterno = usuarioResponse.apellidoPaterno ?: "",
@@ -75,9 +79,11 @@ class UsuarioViewModel : ViewModel() {
     fun actualizarUsuario(usuario: Usuario) {
         viewModelScope.launch {
             try {
+                _isUpdating.value = true
                 val id = usuario.id
                 if (id == null) {
                     Log.e("UsuarioViewModel", "ID del usuario es null, no se puede actualizar")
+                    _isUpdating.value = false
                     return@launch
                 }
                 val response = RetrofitClient.instance.actualizarUsuario(id, usuario)
@@ -91,6 +97,8 @@ class UsuarioViewModel : ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 _eventoUI.emit("Error en la conexión")
+            } finally {
+                _isUpdating.value = false
             }
         }
     }

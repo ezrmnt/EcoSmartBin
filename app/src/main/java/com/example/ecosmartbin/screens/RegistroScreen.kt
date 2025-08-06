@@ -16,15 +16,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -34,6 +31,7 @@ import com.example.ecosmartbin.models.Usuario
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,44 +63,13 @@ fun RegistroScreen(navController: NavController) {
         }, year, month, day
     )
 
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())  // formato para DB
-
     val listaPaises = listOf(
-        "Afganistán", "Albania", "Alemania", "Andorra", "Angola", "Antigua y Barbuda",
-        "Arabia Saudita", "Argelia", "Argentina", "Armenia", "Australia", "Austria",
-        "Azerbaiyán", "Bahamas", "Bangladés", "Barbados", "Baréin", "Bélgica",
-        "Belice", "Benín", "Bielorrusia", "Birmania", "Bolivia", "Bosnia y Herzegovina",
-        "Botsuana", "Brasil", "Brunéi", "Bulgaria", "Burkina Faso", "Burundi",
-        "Bután", "Cabo Verde", "Camboya", "Camerún", "Canadá", "Catar", "Chad",
-        "Chile", "China", "Chipre", "Colombia", "Comoras", "Corea del Norte",
-        "Corea del Sur", "Costa de Marfil", "Costa Rica", "Croacia", "Cuba",
-        "Dinamarca", "Dominica", "Ecuador", "Egipto", "El Salvador", "Emiratos Árabes Unidos",
-        "Eritrea", "Eslovaquia", "Eslovenia", "España", "Estados Unidos", "Estonia",
-        "Esuatini", "Etiopía", "Filipinas", "Finlandia", "Fiyi", "Francia", "Gabón",
-        "Gambia", "Georgia", "Ghana", "Granada", "Grecia", "Guatemala", "Guinea",
-        "Guinea-Bisáu", "Guinea Ecuatorial", "Guyana", "Haití", "Honduras", "Hungría",
-        "India", "Indonesia", "Irak", "Irán", "Irlanda", "Islandia", "Islas Marshall",
-        "Islas Salomón", "Israel", "Italia", "Jamaica", "Japón", "Jordania",
-        "Kazajistán", "Kenia", "Kirguistán", "Kiribati", "Kuwait", "Laos",
-        "Lesoto", "Letonia", "Líbano", "Liberia", "Libia", "Liechtenstein",
-        "Lituania", "Luxemburgo", "Madagascar", "Malasia", "Malaui", "Maldivas",
-        "Malí", "Malta", "Marruecos", "Mauricio", "Mauritania", "México",
-        "Micronesia", "Moldavia", "Mónaco", "Mongolia", "Montenegro", "Mozambique",
-        "Namibia", "Nauru", "Nepal", "Nicaragua", "Níger", "Nigeria",
-        "Noruega", "Nueva Zelanda", "Omán", "Países Bajos", "Pakistán",
-        "Palaos", "Palestina", "Panamá", "Papúa Nueva Guinea", "Paraguay", "Perú",
-        "Polonia", "Portugal", "Reino Unido", "República Centroafricana",
-        "República Checa", "República del Congo", "República Democrática del Congo",
-        "República Dominicana", "Ruanda", "Rumanía", "Rusia", "Samoa",
-        "San Cristóbal y Nieves", "San Marino", "San Vicente y las Granadinas",
-        "Santa Lucía", "Santo Tomé y Príncipe", "Senegal", "Serbia",
-        "Seychelles", "Sierra Leona", "Singapur", "Siria", "Somalia",
-        "Sri Lanka", "Sudáfrica", "Sudán", "Sudán del Sur", "Suecia",
-        "Suiza", "Surinam", "Tailandia", "Tanzania", "Tayikistán",
-        "Timor Oriental", "Togo", "Tonga", "Trinidad y Tobago", "Túnez",
-        "Turkmenistán", "Turquía", "Tuvalu", "Ucrania", "Uganda",
-        "Uruguay", "Uzbekistán", "Vanuatu", "Vaticano", "Venezuela",
-        "Vietnam", "Yemen", "Yibuti", "Zambia", "Zimbabue"
+        "México", "Estados Unidos", "España", "Colombia", "Argentina",
+        "Chile", "Perú", "Ecuador", "Venezuela", "Guatemala",
+        "Costa Rica", "Panamá", "República Dominicana", "Uruguay", "Paraguay",
+        "Bolivia", "El Salvador", "Honduras", "Nicaragua", "Cuba",
+        "Canadá", "Brasil", "Portugal", "Francia", "Alemania",
+        "Italia", "Reino Unido", "China", "Japón", "Australia"
     )
 
     var expanded by remember { mutableStateOf(false) }
@@ -110,123 +77,122 @@ fun RegistroScreen(navController: NavController) {
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = Color.Transparent
+        containerColor = Color(0xFFF5F5F5)
     ) { innerPadding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF4CAF50),
-                            Color(0xFF2E7D32)
-                        )
-                    )
-                )
+                .background(Color(0xFFF5F5F5))
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            // Logo y título
+            Image(
+                painter = painterResource(id = R.drawable.logoeco),
+                contentDescription = "App Logo",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .padding(top = 48.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = "App Logo",
-                    modifier = Modifier.size(120.dp),
-                    contentScale = ContentScale.Fit
-                )
+                    .size(100.dp)
+                    .padding(top = 32.dp, bottom = 16.dp)
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Crear cuenta",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color(0xFF2E7D32),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
 
-                Text(
-                    text = "Únete a EcoSmartBin",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+            Text(
+                text = "Únete a nuestra comunidad ecológica",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
 
-                Text(
-                    text = "Crea tu cuenta para comenzar",
-                    fontSize = 16.sp,
-                    color = Color.White.copy(alpha = 0.8f)
-                )
-            }
-
+            // Formulario
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                )
+                    .padding(horizontal = 24.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Column(
                     modifier = Modifier
                         .padding(24.dp)
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Crear cuenta",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color(0xFF2E7D32),
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = nombre,
-                        onValueChange = { nombre = it },
-                        label = { Text("Nombre") },
-                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Nombre") },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                    // Campos de nombre
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(
+                            value = nombre,
+                            onValueChange = { nombre = it },
+                            label = { Text("Nombre") },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    OutlinedTextField(
-                        value = apellidoPaterno,
-                        onValueChange = { apellidoPaterno = it },
-                        label = { Text("Apellido Paterno") },
-                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Apellido Paterno") },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                    // Campos de apellidos
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(
+                            value = apellidoPaterno,
+                            onValueChange = { apellidoPaterno = it },
+                            label = { Text("Apellido Paterno") },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors()
+                        )
+
+                        OutlinedTextField(
+                            value = apellidoMaterno,
+                            onValueChange = { apellidoMaterno = it },
+                            label = { Text("Apellido Materno") },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    OutlinedTextField(
-                        value = apellidoMaterno,
-                        onValueChange = { apellidoMaterno = it },
-                        label = { Text("Apellido Materno") },
-                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Apellido Materno") },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
+                    // Información de contacto
                     OutlinedTextField(
                         value = telefono,
                         onValueChange = {
-                            if (it.all { char -> char.isDigit() }) {
+                            if (it.all { char -> char.isDigit() } && it.length == 20) {
                                 telefono = it
                             }
                         },
                         label = { Text("Teléfono") },
-                        leadingIcon = { Icon(Icons.Default.Phone, contentDescription = "Teléfono") },
+                        leadingIcon = { Icon(Icons.Default.Phone, contentDescription = "Teléfono", tint = Color(0xFF4CAF50)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        colors = textFieldColors(),
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
+                    OutlinedTextField(
+                        value = correo,
+                        onValueChange = { correo = it },
+                        label = { Text("Correo electrónico") },
+                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Correo", tint = Color(0xFF4CAF50)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = textFieldColors()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Selector de país
                     ExposedDropdownMenuBox(
                         expanded = expanded,
                         onExpandedChange = { expanded = !expanded }
@@ -238,11 +204,12 @@ fun RegistroScreen(navController: NavController) {
                                 expanded = true
                             },
                             label = { Text("País") },
-                            leadingIcon = { Icon(Icons.Default.Place, contentDescription = "País") },
+                            leadingIcon = { Icon(Icons.Default.Place, contentDescription = "País", tint = Color(0xFF4CAF50)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .menuAnchor(),
                             shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors(),
                             singleLine = true
                         )
                         ExposedDropdownMenu(
@@ -260,46 +227,39 @@ fun RegistroScreen(navController: NavController) {
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    OutlinedTextField(
-                        value = correo,
-                        onValueChange = { correo = it },
-                        label = { Text("Correo electrónico") },
-                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Correo") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
+                    // Fecha de nacimiento
                     OutlinedButton(
                         onClick = { datePickerDialog.show() },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = if (fechaNacimiento == null) Color.Gray else Color.Black
+                        )
                     ) {
                         Text(
                             text = fechaNacimiento?.let { d ->
-                                java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(d)
-                            } ?: "Selecciona tu fecha de nacimiento",
-                            color = if (fechaNacimiento == null) Color.Gray else Color.Black
+                                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(d)
+                            } ?: "Fecha de nacimiento",
+                            modifier = Modifier.padding(vertical = 8.dp)
                         )
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
+                    // Contraseñas
                     OutlinedTextField(
                         value = contrasena,
                         onValueChange = { contrasena = it },
                         label = { Text("Contraseña") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Contraseña") },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Contraseña", tint = Color(0xFF4CAF50)) },
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        colors = textFieldColors()
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -308,15 +268,17 @@ fun RegistroScreen(navController: NavController) {
                         value = contrasenaConfirmacion,
                         onValueChange = { contrasenaConfirmacion = it },
                         label = { Text("Confirmar contraseña") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirmar contraseña") },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirmar contraseña", tint = Color(0xFF4CAF50)) },
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        colors = textFieldColors()
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // Botón de registro
                     Button(
                         onClick = {
                             scope.launch {
@@ -399,19 +361,15 @@ fun RegistroScreen(navController: NavController) {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
+                            .height(48.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF4CAF50)
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
                         )
                     ) {
-                        Text(
-                            text = "Registrarse",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Text("Registrarse", fontWeight = FontWeight.Medium)
                     }
-
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -422,12 +380,23 @@ fun RegistroScreen(navController: NavController) {
                         Text(
                             text = "¿Ya tienes cuenta? Inicia sesión",
                             color = Color(0xFF4CAF50),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            fontSize = 14.sp
                         )
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
+
+@Composable
+private fun textFieldColors() = TextFieldDefaults.colors(
+    focusedContainerColor = Color.White,
+    unfocusedContainerColor = Color.White,
+    focusedIndicatorColor = Color(0xFF4CAF50),
+    unfocusedIndicatorColor = Color.LightGray,
+    focusedLabelColor = Color(0xFF4CAF50),
+    focusedLeadingIconColor = Color(0xFF4CAF50)
+)
